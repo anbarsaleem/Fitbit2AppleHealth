@@ -50,9 +50,15 @@ router.get("/", (req, res) => {
     });
   }
 
-  // GET request to Fitbit API to retrieve profile data with access token
+  // GET request to Fitbit API to retrieve recent activity data with access token
   function performGetRequest(accessToken) {
-    const endpointUrl = "https://api.fitbit.com/1/user/-/profile.json";
+    var date = new Date();
+    var currentDay = String(date.getDate()).padStart(2, "0");
+    var currentMonth = String(date.getMonth() + 1).padStart(2, "0");
+    var currentYear = date.getFullYear();
+    const activityName = "Weights"
+
+    const endpointUrl = `https://api.fitbit.com/1/user/-/activities/list.json?beforeDate=${currentYear}-${currentMonth}-${currentDay}&sort=desc&offset=0&limit=10`;
     axios
       .get(endpointUrl, {
         headers: {
@@ -60,7 +66,13 @@ router.get("/", (req, res) => {
         },
       })
       .then((response) => {
-        console.log(response.data);
+        //console.log(response.data);
+        if (response.data.activities && Array.isArray(response.data.activities)) {
+          const filteredActivities = response.data.activities.filter(activity => activity.activityName === activityName);
+          console.log(filteredActivities);
+        } else {
+          console.log('Activities not found in the response.');
+        }
       })
       .catch((error) => {
         console.error(error);
