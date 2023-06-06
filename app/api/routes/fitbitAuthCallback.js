@@ -1,9 +1,49 @@
 var express = require("express");
 var axios = require("axios");
+const e = require("express");
 var router = express.Router();
 
 const client_secret = process.env.FITBIT_CLIENT_SECRET;
 const client_id = process.env.FITBIT_CLIENT_ID;
+var accessToken = "";
+var refreshToken = "";
+var tokenExpirationTime;
+
+async function refreshAccessToken(refreshToken) {
+  try {
+    const response = await axios.post(
+      "https://api.fitbit.com/oauth2/token",
+      {
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+        // Add any additional parameters required by Fitbit's token endpoint
+      },
+      {
+        auth: {
+          username: client_id,
+          password: client_secret,
+        },
+      }
+    );
+
+    // Extract the new access token from the response
+    const newAccessToken = response.data.access_token;
+    tokenExpirationTime = calculateExpirationTimeOfAccessToken(
+      response.data.expires_in
+    );
+
+    // Return the new access token
+    return newAccessToken;
+  } catch (error) {
+    // Handle the error appropriately
+    throw new Error("Token refresh failed");
+  }
+}
+
+function calculateExpirationTimeOfAccessToken(secondsFromNow) {
+  const now = new Date();
+  tokenExpirationTime = now.setSeconds(now.getSeconds() + secondsFromNow);
+}
 
 /* GET fitbitAuthCallback page. */
 router.get("/", (req, res) => {
@@ -37,8 +77,12 @@ router.get("/", (req, res) => {
       axios
         .post("https://api.fitbit.com/oauth2/token", postData, { headers })
         .then((response) => {
-          const accessToken = response.data.access_token;
-          const refreshToken = response.data.refresh_token;
+          accessToken = response.data.access_token;
+          refreshToken = response.data.refresh_token;
+          tokenExpirationTime = calculateExpirationTimeOfAccessToken(
+            response.data.expires_in
+          );
+          console.log(response.data);
           console.log("Access Token: " + accessToken);
           console.log("Refresh Token: " + refreshToken);
           resolve(accessToken); // Resolve the promise with the access token
@@ -56,7 +100,7 @@ router.get("/", (req, res) => {
     var currentDay = String(date.getDate()).padStart(2, "0");
     var currentMonth = String(date.getMonth() + 1).padStart(2, "0");
     var currentYear = date.getFullYear();
-    const activityName = "Weights"
+    const activityName = "Weights";
 
     const endpointUrl = `https://api.fitbit.com/1/user/-/activities/list.json?beforeDate=${currentYear}-${currentMonth}-${currentDay}&sort=desc&offset=0&limit=10`;
     axios
@@ -67,11 +111,16 @@ router.get("/", (req, res) => {
       })
       .then((response) => {
         //console.log(response.data);
-        if (response.data.activities && Array.isArray(response.data.activities)) {
-          const filteredActivities = response.data.activities.filter(activity => activity.activityName === activityName);
+        if (
+          response.data.activities &&
+          Array.isArray(response.data.activities)
+        ) {
+          const filteredActivities = response.data.activities.filter(
+            (activity) => activity.activityName === activityName
+          );
           console.log(filteredActivities);
         } else {
-          console.log('Activities not found in the response.');
+          console.log("Activities not found in the response.");
         }
       })
       .catch((error) => {
@@ -79,14 +128,28 @@ router.get("/", (req, res) => {
       });
   }
 
-  performPostRequest()
-    .then((accessToken) => {
-      return performGetRequest(accessToken);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+  function isAccessTokenExpired() {
+    return tokenExpirationTime <= Date.now();
+  }
 
+  if (accessToken == "" || isAccessTokenExpired()) {
+    performPostRequest()
+      .then((accessToken) => {
+        return performGetRequest(accessToken);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  } else {
+    refreshAccessToken(refreshToken);
+    performPostRequest()
+      .then((accessToken) => {
+        return performGetRequest(accessToken);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
   // Redirect the user or send a response as needed
   res.send("authorization complete");
 });
