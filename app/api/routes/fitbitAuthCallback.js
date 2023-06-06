@@ -151,7 +151,8 @@ router.get("/", (req, res) => {
       });
   }
   // Redirect the user or send a response as needed
-  res.send("authorization complete");
+  //res.send("authorization complete");
+  res.redirect("http://localhost:8080");
 });
 
 module.exports = router;

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p class="App-intro">{{ apiResponse }}</p>
+    <div v-html="apiResponse"></div>
     <h1>HI</h1>
   </div>
   <img alt="Vue logo" src="./assets/logo.png" />
@@ -20,10 +20,10 @@ export default {
   },
   methods: {
     callAPI() {
-      fetch("http://localhost:9000/testAPI")
+      fetch("http://localhost:9000/fitbitAuth")
         .then((res) => res.text())
         .then((res) => (this.apiResponse = res));
-      console.log("fetched api response");
+      console.log("fetched fitbit auth response from api");
     },
   },
 };
