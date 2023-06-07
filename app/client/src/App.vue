@@ -1,12 +1,13 @@
 <template>
   <div>
-    <div v-html="apiResponse"></div>
-    <h1>HI</h1>
+    <div v-html="apiResponse" class="text-blue-300 text-center"></div>
+    <h1 class="text-blue-400 text-center">HI</h1>
   </div>
-  <img alt="Vue logo" src="./assets/logo.png" />
+  <img alt="Vue logo" src="./assets/logo.png" class="object-center w-60 h-60" />
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   data() {
     console.log("retrieving data");
@@ -30,12 +31,7 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 </style>
