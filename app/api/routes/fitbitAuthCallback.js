@@ -8,36 +8,39 @@ const client_id = process.env.FITBIT_CLIENT_ID;
 var accessToken = "";
 var refreshToken = "";
 var tokenExpirationTime;
+//Encode client id and secret
+const encodedClientIDAndSecret = btoa(client_id + ":" + client_secret);
 
 async function refreshAccessToken(refreshToken) {
-  try {
-    const response = await axios.post(
-      "https://api.fitbit.com/oauth2/token",
-      {
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-        // Add any additional parameters required by Fitbit's token endpoint
-      },
-      {
-        auth: {
-          username: client_id,
-          password: client_secret,
-        },
-      }
-    );
+  const postData = {
+    refresh_token: refreshToken,
+    grant_type: "refresh_token",
+  };
 
-    // Extract the new access token from the response
-    const newAccessToken = response.data.access_token;
-    tokenExpirationTime = calculateExpirationTimeOfAccessToken(
-      response.data.expires_in
-    );
+  const headers = {
+    Authorization: "Basic " + encodedClientIDAndSecret,
+    "Content-Type": "application/x-www-form-urlencoded",
+  };
 
-    // Return the new access token
-    return newAccessToken;
-  } catch (error) {
-    // Handle the error appropriately
-    throw new Error("Token refresh failed");
-  }
+  return new Promise((resolve, reject) => {
+    axios
+      .post("https://api.fitbit.com/oauth2/token", postData, { headers })
+      .then((response) => {
+        accessToken = response.data.access_token;
+        refreshToken = response.data.refresh_token;
+        tokenExpirationTime = calculateExpirationTimeOfAccessToken(
+          response.data.expires_in
+        );
+        console.log(response.data);
+        console.log("New Access Token: " + accessToken);
+        console.log("New Refresh Token: " + refreshToken);
+        resolve(accessToken); // Resolve the promise with the access token
+      })
+      .catch((error) => {
+        console.log("Token Refresh Failed");
+        reject(error); // Reject the promise with the error
+      });
+  });
 }
 
 function calculateExpirationTimeOfAccessToken(secondsFromNow) {
@@ -56,9 +59,6 @@ router.get("/", (req, res) => {
   const authCode = url.searchParams.get("code");
 
   console.log("The authCode is " + authCode);
-
-  //Encode client id and secret
-  const encodedClientIDAndSecret = btoa(client_id + ":" + client_secret);
 
   // POST to Fitbit API with auth code
   function performPostRequest() {
