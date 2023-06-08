@@ -1,6 +1,8 @@
 var express = require("express");
 var axios = require("axios");
 const e = require("express");
+const fs = require("fs");
+const path = require("path");
 var router = express.Router();
 
 const client_secret = process.env.FITBIT_CLIENT_SECRET;
@@ -82,9 +84,9 @@ router.get("/", (req, res) => {
           tokenExpirationTime = calculateExpirationTimeOfAccessToken(
             response.data.expires_in
           );
-          console.log(response.data);
-          console.log("Access Token: " + accessToken);
-          console.log("Refresh Token: " + refreshToken);
+          //console.log(response.data);
+          //console.log("Access Token: " + accessToken);
+          //console.log("Refresh Token: " + refreshToken);
           resolve(accessToken); // Resolve the promise with the access token
         })
         .catch((error) => {
@@ -119,6 +121,16 @@ router.get("/", (req, res) => {
             (activity) => activity.activityName === activityName
           );
           console.log(filteredActivities);
+
+          //Write fitbit data from api to json file for frontend to access
+          const filePath = path.join(__dirname, 'fitbitData.json');
+          fs.writeFile(filePath, JSON.stringify(filteredActivities), (err) => {
+            if (err) {
+              console.error(err);
+            } else {
+              console.log('JSON data has been written to file successfully.');
+            }
+          });
         } else {
           console.log("Activities not found in the response.");
         }
@@ -152,7 +164,7 @@ router.get("/", (req, res) => {
   }
   // Redirect the user or send a response as needed
   //res.send("authorization complete");
-  res.redirect("http://localhost:8080");
+  //res.redirect("http://localhost:8080");
 });
 
 module.exports = router;
