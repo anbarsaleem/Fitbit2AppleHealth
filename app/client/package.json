@@ -1,51 +1,47 @@
 {
   "name": "client",
-  "version": "0.1.0",
   "private": true,
+  "version": "0.0.1",
+  "type": "module",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "test:e2e": "cypress run",
+    "test:unit": "vitest",
+    "lint": "eslint"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.14",
-    "core-js": "^3.8.3",
-    "cors": "^2.8.5",
-    "postcss": "^8.4.24",
-    "tailwindcss": "^3.3.2",
-    "vue": "^3.2.13"
+    "@capacitor/app": "5.0.3",
+    "@capacitor/core": "^5.0.5",
+    "@capacitor/haptics": "5.0.2",
+    "@capacitor/ios": "^5.0.4",
+    "@capacitor/keyboard": "5.0.4",
+    "@capacitor/status-bar": "5.0.2",
+    "@ionic-native/health-kit": "^5.36.0",
+    "@ionic/vue": "^7.0.13",
+    "@ionic/vue-router": "^7.0.0",
+    "capacitor": "^0.5.5",
+    "cocoapods": "^0.0.0",
+    "com.telerik.plugins.healthkit": "^0.7.0",
+    "ionicons": "^7.0.0",
+    "vue": "^3.2.45",
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0",
-    "@vue/cli-plugin-eslint": "~5.0.0",
-    "@vue/cli-service": "~5.0.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-vue": "^8.0.3",
-    "prettier": "^2.4.1"
+    "@capacitor/cli": "^5.0.5",
+    "@vitejs/plugin-legacy": "^4.0.2",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "@vue/eslint-config-typescript": "^11.0.2",
+    "@vue/test-utils": "^2.3.0",
+    "cypress": "^12.7.0",
+    "eslint": "^8.35.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "jsdom": "^21.1.0",
+    "typescript": "^4.9.3",
+    "vite": "^4.1.0",
+    "vitest": "^0.29.2",
+    "vue-tsc": "^1.0.24"
   },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended",
-      "plugin:prettier/recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+  "description": "An Ionic project"
 }

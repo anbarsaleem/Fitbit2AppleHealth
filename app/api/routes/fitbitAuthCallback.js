@@ -104,7 +104,7 @@ router.get("/", (req, res) => {
     var currentYear = date.getFullYear();
     const activityName = "Weights";
 
-    const endpointUrl = `https://api.fitbit.com/1/user/-/activities/list.json?beforeDate=${currentYear}-${currentMonth}-${currentDay}&sort=desc&offset=0&limit=10`;
+    const endpointUrl = `https://api.fitbit.com/1/user/-/activities/list.json?beforeDate=${currentYear}-${currentMonth}-${currentDay}&sort=desc&offset=0&limit=15`;
     axios
       .get(endpointUrl, {
         headers: {
@@ -164,7 +164,7 @@ router.get("/", (req, res) => {
   }
   // Redirect the user or send a response as needed
   //res.send("authorization complete");
-  //res.redirect("http://localhost:8080");
+  res.redirect("f2ahclient://callback");
 });
 
 module.exports = router;

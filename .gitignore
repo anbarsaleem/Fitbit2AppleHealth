@@ -128,3 +128,18 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+## User settings
+xcuserdata/
+
+## Xcode 8 and earlier
+*.xcscmblueprint
+*.xccheckout
+node_modules
+.DS_Store
+build/
+DataStore/
+DerivedData/
+dist
+dist-ssr
+*.local
