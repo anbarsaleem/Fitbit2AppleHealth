@@ -119,14 +119,14 @@ export default defineComponent({
   methods: {
     callAPI() {
       return new Promise((resolve, reject) => {
-        fetch(import.meta.env.VITE_SERVER_URL + "/fitbitAuth")
+        fetch(import.meta.env.VITE_SERVER_URL + "fitbitAuth")
           .then((res) => res.text())
           .then((res) => {
             this.authResponse = res;
             console.log("fetched fitbit auth response from API");
             console.log("Auth response: " + this.authResponse);
 
-            return fetch(import.meta.env.VITE_SERVER_URL + "/fitbitDataRoute");
+            return fetch(import.meta.env.VITE_SERVER_URL + "fitbitDataRoute");
           })
           .then((res) => res.text())
           .then((res) => {
