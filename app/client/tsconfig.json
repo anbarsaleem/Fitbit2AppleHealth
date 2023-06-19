@@ -1,15 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
+    "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "ESNext",
+    "module": "esnext",
     "moduleResolution": "Node",
     "strict": true,
     "jsx": "preserve",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,
-    "lib": ["ESNext", "DOM"],
+    "allowSyntheticDefaultImports": true,
+    "types": ["vite/client"],
+    "lib": ["esnext", "DOM"],
     "skipLibCheck": true,
     "noEmit": true,
     "paths": {

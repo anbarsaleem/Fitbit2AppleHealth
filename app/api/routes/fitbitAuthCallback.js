@@ -5,6 +5,8 @@ const fs = require("fs");
 const path = require("path");
 var router = express.Router();
 
+const server_url = process.env.SERVER_URL;
+
 const client_secret = process.env.FITBIT_CLIENT_SECRET;
 const client_id = process.env.FITBIT_CLIENT_ID;
 var accessToken = "";
@@ -67,7 +69,7 @@ router.get("/", (req, res) => {
     const postData = {
       code: authCode,
       grant_type: "authorization_code",
-      redirect_uri: "http://localhost:9000/fitbitAuthCallback",
+      redirect_uri: server_url + "/fitbitAuthCallback",
     };
 
     const headers = {

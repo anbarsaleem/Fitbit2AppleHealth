@@ -21,9 +21,11 @@
     "@ionic-native/health-kit": "^5.36.0",
     "@ionic/vue": "^7.0.13",
     "@ionic/vue-router": "^7.0.0",
+    "@vue/cli-service": "^5.0.8",
     "capacitor": "^0.5.5",
     "cocoapods": "^0.0.0",
     "com.telerik.plugins.healthkit": "^0.7.0",
+    "dotenv": "^16.3.1",
     "ionicons": "^7.0.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
