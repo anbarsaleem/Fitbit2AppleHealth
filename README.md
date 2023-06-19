@@ -35,12 +35,12 @@ This is a full stack IOS application that integrates your Fitbit workout data to
 ### Prerequisites: Fitbit Developer Account, XCode, Apple Developer Account
 
 1. Clone the Repo onto your machine
-2. `cd` into the api folder
+2. From the root folder
     1. Install dependencies with `npm install`
     2. Create .env file and include your own fitbit API client secret and client id
         1. Must create fitbit developer account and register your own application to receive keys (should only take 5 minutes)
             1. [https://dev.fitbit.com/build/reference/web-api/developer-guide/authorization/](https://dev.fitbit.com/build/reference/web-api/developer-guide/authorization/)
-            2. For ease of using my routes, make your callback url http://localhost:9000/fitbitAuthCallback
+            2. I deployed my express server on heroku for the base url for all my routes. Pick your deployment of choice (localhost is fine) and then adjust the `SERVER_URL` and `VITE_SERVER_URL` env vars in the /api and /client directories' env files, respectively
         2. Once everything is configured, run `npm start` to start the server!
 3. `cd` into the client folder
     1. Install dependencies with `npm install`
