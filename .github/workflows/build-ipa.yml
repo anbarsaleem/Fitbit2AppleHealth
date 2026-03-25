@@ -1,0 +1,73 @@
+name: Build Unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-ipa:
+    runs-on: macos-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: app/client/package-lock.json
+
+      - name: Install client dependencies
+        working-directory: app/client
+        run: npm ci
+
+      - name: Build web app
+        working-directory: app/client
+        run: npm run build
+
+      - name: Sync Capacitor iOS project
+        working-directory: app/client
+        run: npx cap sync ios
+
+      - name: Install CocoaPods dependencies
+        working-directory: app/client/ios/App
+        run: pod install
+
+      - name: Build Xcode archive (no code signing)
+        working-directory: app/client/ios/App
+        run: |
+          xcodebuild archive \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -archivePath $RUNNER_TEMP/App.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PROVISIONING_PROFILE=""
+
+      - name: Package unsigned IPA
+        run: |
+          APP_PATH=$(find $RUNNER_TEMP/App.xcarchive/Products -name "*.app" | head -1)
+          if [ -z "$APP_PATH" ]; then
+            echo "Error: No .app bundle found in the archive." >&2
+            exit 1
+          fi
+          mkdir -p $RUNNER_TEMP/Payload
+          cp -r "$APP_PATH" $RUNNER_TEMP/Payload/
+          cd $RUNNER_TEMP
+          zip -r App-unsigned.ipa Payload
+          echo "IPA created at: $RUNNER_TEMP/App-unsigned.ipa"
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: App-unsigned-ipa
+          path: ${{ runner.temp }}/App-unsigned.ipa
+          retention-days: 7
